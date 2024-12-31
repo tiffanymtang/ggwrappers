@@ -24,6 +24,123 @@ get_aesthetics <- function(...) {
 }
 
 
+#' Add color and plot theme
+#'
+#' @param plot A ggplot object
+#' @param aesthetic One of "color" or "fill" indicating which aesthetic to add
+#'   color to
+#' @param discrete Logical indicating whether to use the discrete or continuous
+#'   color/fill scale
+#' @param palette One of 1 or 2 indicating which default color palette to use
+#' @param ... Additional arguments to pass to the color/fill scale functions
+#'
+#' @return A ggplot object with color/plot theme added
+#'
+#' @keywords internal
+add_theme <- function(plot, aesthetic = c("color", "fill"), discrete = TRUE,
+                      palette = c("1", "2"), ...) {
+  palette <- match.arg(palette)
+  aesthetic <- match.arg(aesthetic, several.ok = TRUE)
+  plot_theme <- getOption("ggwrappers.theme")
+  if (palette == "1") {
+    color_discrete_theme <- getOption("ggwrappers.color_palette_discrete")
+    color_continuous_theme <- getOption("ggwrappers.color_palette_continuous")
+    fill_discrete_theme <- getOption("ggwrappers.fill_palette_discrete")
+    fill_continuous_theme <- getOption("ggwrappers.fill_palette_continuous")
+  } else if (palette == "2") {
+    color_discrete_theme <- getOption("ggwrappers.color_palette2_discrete")
+    color_continuous_theme <- getOption("ggwrappers.color_palette2_continuous")
+    fill_discrete_theme <- getOption("ggwrappers.fill_palette2_discrete")
+    fill_continuous_theme <- getOption("ggwrappers.fill_palette2_continuous")
+  }
+
+  if (!is.null(discrete)) {
+    if (discrete) {
+      if ("color" %in% aesthetic) {
+        if (color_discrete_theme == "default") {
+          if (rlang::is_installed("vthemes")) {
+            if (palette == "1") {
+              plot <- plot +
+                vthemes::scale_color_vmodern(discrete = TRUE, ...)
+            } else {
+              plot <- plot +
+                vthemes::scale_color_vmodern(
+                  discrete = TRUE, palette = "viridis", viridis_option = "D", ...
+                )
+            }
+          }
+        } else {
+          plot <- plot + color_discrete_theme
+        }
+      }
+      if ("fill" %in% aesthetic) {
+        if (fill_discrete_theme == "default") {
+          if (rlang::is_installed("vthemes")) {
+            if (palette == "1") {
+              plot <- plot +
+                vthemes::scale_fill_vmodern(discrete = TRUE, ...)
+            } else {
+              plot <- plot +
+                vthemes::scale_fill_vmodern(
+                  discrete = TRUE, palette = "viridis", viridis_option = "D", ...
+                )
+            }
+          }
+        } else {
+          plot <- plot + fill_discrete_theme
+        }
+      }
+    } else {
+      if ("color" %in% aesthetic) {
+        if (color_continuous_theme == "default") {
+          if (rlang::is_installed("vthemes")) {
+            if (palette == "1") {
+              plot <- plot +
+                vthemes::scale_color_vmodern(discrete = FALSE, ...)
+            } else {
+              plot <- plot +
+                vthemes::scale_color_vmodern(
+                  discrete = FALSE, palette = "viridis", viridis_option = "D", ...
+                )
+            }
+          }
+        } else {
+          plot <- plot + color_continuous_theme
+        }
+      }
+      if ("fill" %in% aesthetic) {
+        if (fill_continuous_theme == "default") {
+          if (rlang::is_installed("vthemes")) {
+            if (palette == "1") {
+              plot <- plot +
+                vthemes::scale_fill_vmodern(discrete = FALSE, ...)
+            } else {
+              plot <- plot +
+                vthemes::scale_fill_vmodern(
+                  discrete = FALSE, palette = "viridis", viridis_option = "D", ...
+                )
+            }
+          }
+        } else {
+          plot <- plot + fill_continuous_theme
+        }
+      }
+    }
+  }
+
+  if (identical(plot_theme, "default")) {
+    if (rlang::is_installed("vthemes")) {
+      plot_theme <- vthemes::theme_vmodern()
+    } else {
+      plot_theme <- ggplot2::theme_classic()
+    }
+  }
+  plot <- plot + plot_theme
+
+  return(plot)
+}
+
+
 #' Add color to axis text labels in ggplot
 #'
 #' @description Helper function to add color to axis text labels in a ggplot
@@ -97,7 +214,7 @@ add_axis_text_colors <- function(plot, labels, label_colors = NULL,
           values = scale_values, labels = scale_labels
         )
     } else {
-      plot <- plot + viridis::scale_colour_viridis(discrete = F)
+      plot <- plot + viridis::scale_colour_viridis(discrete = FALSE)
     }
     if (identical(axis, "x")) {
       plot <- plot +
@@ -127,18 +244,8 @@ add_axis_text_colors <- function(plot, labels, label_colors = NULL,
 #' @keywords internal
 get_custom_color_palette <- function(color_labels, return_palette = FALSE) {
   if (is.factor(color_labels)) {
-    if (nlevels(color_labels) <= 8) {
-      # color palette is a slight modification of
-      # RColorBrewer::brewer.pal(n = 8, name = "Dark2")
-      custom_colors <- c("#FF9300", "#1B9E77", "#7570B3", "#E7298A",
-                         "#66A61E", "#E6AB02", "#A6761D", "#666666")
-      colors_out <- custom_colors[color_labels]
-    } else {
-      custom_colors <- scales::col_factor(
-        palette = "viridis", domain = levels(color_labels)
-      )
-      colors_out <- custom_colors(color_labels)
-    }
+    custom_colors <- scales::hue_pal()(length(unique(color_labels)))
+    colors_out <- custom_colors[color_labels]
   } else {
     custom_colors <- scales::col_numeric(
       palette = "viridis", domain = c(min(color_labels), max(color_labels))

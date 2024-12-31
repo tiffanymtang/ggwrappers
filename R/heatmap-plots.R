@@ -65,7 +65,7 @@
 #'   data vector of colors to use for the fill color scale.
 #' @param viridis_option Argument indicating viridis palette name. Only used if
 #'   `color_scheme = "viridis"`.
-#' @param ... Other arguments to pass to \code{vthemes::theme_vmodern()}.
+#' @param ... Other arguments to pass to \code{ggplot2::theme()}.
 #'
 #' @return A ggplot object.
 #'
@@ -214,45 +214,47 @@ plot_heatmap <- function(X, y_groups = NULL, x_groups = NULL,
   }
 
   # add theme
-  plt <- plt + vthemes::theme_vmodern(...) +
+  plt <- add_theme(plt, discrete = NULL) +
     ggplot2::theme(
       panel.spacing = grid::unit(0, "lines"),
-      panel.border = ggplot2::element_rect(color = "black", fill = NA, size = 1)
+      panel.border = ggplot2::element_rect(
+        color = "black", fill = NA, linewidth = 1
+      )
     )
 
   # add color
   if (!color_by_quantile | is.factor(X_long$fill)) {
     if (is.null(color_scheme) | identical(color_scheme, "viridis")) {
       plt <- plt +
-        vthemes::scale_fill_vmodern(
+        viridis::scale_fill_viridis(
           discrete = !is.numeric(X_long$fill),
-          palette = "viridis",
-          viridis_option = viridis_option
+          begin = 0, end = 0.95,
+          option = viridis_option
         ) +
-        vthemes::scale_color_vmodern(
+        viridis::scale_color_viridis(
           discrete = !is.numeric(X_long$fill),
-          palette = "viridis",
-          viridis_option = viridis_option
+          begin = 0, end = 0.95,
+          option = viridis_option
         )
     } else if (identical(color_scheme, "temperature")) {
       plt <- plt +
         ggplot2::scale_fill_gradient2(
-          low = "blue", high = "red", mid = "white",
+          low = "#1375B7", high = "#C93235", mid = "white",
           midpoint = (z.min + z.max) / 2, limit = c(z.min, z.max)
         ) +
         ggplot2::scale_color_gradient2(
-          low = "blue", high = "red", mid = "white",
+          low = "#1375B7", high = "#C93235", mid = "white",
           midpoint = (z.min + z.max) / 2,
           limit = c(z.min, z.max)
         )
     } else if (identical(color_scheme, "cor_temperature")) {
       plt <- plt +
         ggplot2::scale_fill_gradient2(
-          low = "blue", high = "red", mid = "white",
+          low = "#1375B7", high = "#C93235", mid = "white",
           midpoint = 0, limit = c(-1, 1)
         ) +
         ggplot2::scale_color_gradient2(
-          low = "blue", high = "red", mid = "white",
+          low = "#1375B7", high = "#C93235", mid = "white",
           midpoint = 0, limit = c(-1, 1)
         )
     } else {
@@ -263,7 +265,7 @@ plot_heatmap <- function(X, y_groups = NULL, x_groups = NULL,
   } else {
     if (!is.null(color_scheme)) {
       if (color_scheme == "temperature") {
-        heat_pal <- c("blue", "white", "red")
+        heat_pal <- c("#1375B7", "white", "#C93235")
       } else {
         heat_pal <- color_scheme
       }
@@ -323,6 +325,8 @@ plot_heatmap <- function(X, y_groups = NULL, x_groups = NULL,
         axis.ticks.y = ggplot2::element_blank()
       )
   }
+  plt <- plt +
+    ggplot2::theme(...)
   return(plt)
 }
 

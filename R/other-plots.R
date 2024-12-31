@@ -49,7 +49,10 @@ plot_horizontal_dotplot <- function(data, x_str, y_str, color_str = NULL,
       mapping = ggplot2::aes(
         x = min, xend = max, y = .data[[y_str]], yend = .data[[y_str]]
       ),
-      data = range_df, inherit.aes = FALSE, size = line_size, color = line_color
+      data = range_df,
+      inherit.aes = FALSE,
+      linewidth = line_size,
+      color = line_color
     ) +
     ggplot2::geom_point(size = point_size, ...) +
     ggplot2::labs(x = x_str, y = y_str, color = color_str)
@@ -57,10 +60,14 @@ plot_horizontal_dotplot <- function(data, x_str, y_str, color_str = NULL,
     if (is.character(data[[color_str]])) {
       data[[color_str]] <- as.factor(data[[color_str]])
     }
+    plt <- add_theme(plt, discrete = !is.numeric(data[[color_str]]))
+  } else {
+    plt <- add_theme(plt)
   }
   plt <- plt +
-    vthemes::theme_vmodern(
-      bg_color = "white", grid_color = "grey80",
+    ggplot2::theme(
+      panel.background = ggplot2::element_rect(fill = "white"),
+      panel.grid.major.y = ggplot2::element_line(color = "grey80"),
       panel.grid.major.x = ggplot2::element_blank(),
       axis.ticks.y = ggplot2::element_blank(),
       axis.line = ggplot2::element_blank()

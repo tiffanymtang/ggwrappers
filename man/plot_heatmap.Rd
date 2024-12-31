@@ -137,7 +137,7 @@ data vector of colors to use for the fill color scale.}
 \item{viridis_option}{Argument indicating viridis palette name. Only used if
 \code{color_scheme = "viridis"}.}
 
-\item{...}{Other arguments to pass to \code{vthemes::theme_vmodern()}.}
+\item{...}{Other arguments to pass to \code{ggplot2::theme()}.}
 
 \item{clust_x}{Logical; whether or not to cluster columns.}
 

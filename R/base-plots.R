@@ -77,6 +77,12 @@ plot_bar <- function(data, x_str, y_str = NULL, fill_str = NULL,
         position = position, stat = stat, color = "grey98", fill = fill, ...
       )
   }
+
+  if (is.null(fill_str)) {
+    plt <- add_theme(plt)
+  } else {
+    plt <- add_theme(plt, discrete = !is.numeric(data[[fill_str]]))
+  }
   return(plt)
 }
 
@@ -141,6 +147,11 @@ plot_boxplot <- function(data, x_str = NULL, y_str = NULL, fill_str = NULL,
   if (horizontal) {
     plt <- plt + ggplot2::coord_flip()
   }
+  if (is.null(fill_str)) {
+    plt <- add_theme(plt)
+  } else {
+    plt <- add_theme(plt, discrete = !is.numeric(data[[fill_str]]))
+  }
   return(plt)
 }
 
@@ -188,9 +199,11 @@ plot_density <- function(data, x_str = NULL, fill_str = NULL,
     }
     plt <- plt +
       ggplot2::geom_density(color = "black", alpha = alpha, ...)
+    plt <- add_theme(plt, discrete = !is.numeric(data[[fill_str]]))
   } else {
     plt <- plt +
       ggplot2::geom_density(color = "black", alpha = alpha, fill = fill, ...)
+    plt <- add_theme(plt)
   }
   return(plt)
 }
@@ -239,9 +252,11 @@ plot_histogram <- function(data, x_str = NULL, fill_str = NULL,
     }
     plt <- plt +
       ggplot2::geom_histogram(color = "grey98", bins = bins, ...)
+    plt <- add_theme(plt, discrete = !is.numeric(data[[fill_str]]))
   } else {
     plt <- plt +
       ggplot2::geom_histogram(color = "grey98", bins = bins, fill = fill, ...)
+    plt <- add_theme(plt)
   }
   return(plt)
 }
@@ -311,6 +326,11 @@ plot_line <- function(data, x_str, y_str, color_str = NULL, linetype_str = NULL,
     )
     plt <- plt + ggplot2::aes(group = !!group_str)
   }
+  if (is.null(color_str)) {
+    plt <- add_theme(plt)
+  } else {
+    plt <- add_theme(plt, discrete = !is.numeric(data[[color_str]]))
+  }
   return(plt)
 }
 
@@ -365,6 +385,11 @@ plot_point <- function(data, x_str, y_str, color_str = NULL, shape_str = NULL,
     if (is.character(data[[shape_str]])) {
       data[[shape_str]] <- as.factor(data[[shape_str]])
     }
+  }
+  if (is.null(color_str)) {
+    plt <- add_theme(plt)
+  } else {
+    plt <- add_theme(plt, discrete = !is.numeric(data[[color_str]]))
   }
   return(plt)
 }

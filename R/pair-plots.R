@@ -29,7 +29,6 @@
 #' @param subsample Proportion of rows to subsample and plot.
 #' @param title Character string. Title of plot.
 #' @param drop Logical. Whether or not to drop factors with no observations.
-#' @param ... Additional arguments to pass to [vthemes::theme_vmodern()].
 #'
 #' @return A [GGally::ggpairs] object.
 #'
@@ -109,7 +108,8 @@ plot_pairs <- function(data, columns, column_labels = NULL,
       upper = list(continuous = plot_cor),
       title = title,
       columnLabels = column_labels
-    )
+    ) |>
+      add_theme(discrete = NULL)
   } else if (is.null(color_upper)) {  # one color
     # grab subplot for legend
     if (length(columns) == 1) {
@@ -125,8 +125,8 @@ plot_pairs <- function(data, columns, column_labels = NULL,
         ggplot2::geom_point() +
         ggplot2::labs(color = color_label_lower)
       if (is.null(color_scheme_lower)) {
-        legend_plt <- legend_plt +
-          vthemes::scale_color_vmodern(
+        legend_plt <- legend_plt |>
+          add_theme(
             discrete = !is.numeric(color_lower), drop = drop
           )
       } else {
@@ -155,19 +155,16 @@ plot_pairs <- function(data, columns, column_labels = NULL,
       title = title,
       legend = legend,
       columnLabels = column_labels
-    )
+    ) |>
+      add_theme(discrete = NULL)
 
     # change color palette for all panels
     for (i in 1:plt$nrow) {
       for (j in 1:plt$ncol) {
         if (is.null(color_scheme_lower)) {
-          plt[i, j] <- plt[i, j] +
-            vthemes::scale_color_vmodern(
-              discrete = !is.numeric(color_lower), drop = drop
-            ) +
-            vthemes::scale_fill_vmodern(
-              discrete = !is.numeric(color_lower), drop = drop
-            )
+          plt[i, j] <- add_theme(
+            plt[i, j], discrete = !is.numeric(color_lower), drop = drop
+          )
         } else {
           plt[i, j] <- plt[i, j] +
             ggplot2::scale_color_manual(
@@ -273,10 +270,8 @@ plot_pairs <- function(data, columns, column_labels = NULL,
         ) +
           ggplot2::labs(color = legend_lab, fill = legend_lab)
         if (is.null(color_scheme)) {
-          discrete <- !is.numeric(plt_df$.plt_color)
-          plt[1, 1] <- plt[1, 1] +
-            vthemes::scale_color_vmodern(discrete = discrete, drop = drop) +
-            vthemes::scale_fill_vmodern(discrete = discrete, drop = drop)
+          plt[1, 1] <- plt[1, 1] |>
+            add_theme(discrete = !is.numeric(plt_df$.plt_color), drop = drop)
         } else {
           plt[1, 1] <- plt[1, 1] +
             ggplot2::scale_color_manual(values = color_scheme, drop = drop) +
@@ -302,20 +297,16 @@ plot_pairs <- function(data, columns, column_labels = NULL,
         ) +
         ggplot2::labs(color = color_label_upper, fill = color_label_upper)
       if (is.null(color_scheme_lower)) {
-        legend_plt1 <- legend_plt1 +
-          vthemes::scale_color_vmodern(
-            discrete = !is.numeric(color_lower), drop = drop
-          )
+        legend_plt1 <- legend_plt1 |>
+          add_theme(discrete = !is.numeric(color_lower), drop = drop)
       } else {
         legend_plt1 <- legend_plt1 +
           ggplot2::scale_color_manual(values = color_scheme_lower, drop = drop)
       }
       if (is.null(color_scheme_upper)) {
-        legend_plt2 <- legend_plt2 +
-          vthemes::scale_color_vmodern(
-            discrete = !is.numeric(color_upper),
-            palette = "viridis", viridis_option = "D",
-            drop = drop
+        legend_plt2 <- legend_plt2 |>
+          add_theme(
+            discrete = !is.numeric(color_upper), drop = drop, palette = "2"
           )
       } else {
         legend_plt2 <- legend_plt2 +
@@ -372,6 +363,7 @@ plot_pairs <- function(data, columns, column_labels = NULL,
           columnLabels = column_labels
         )
       }
+      plt <- add_theme(plt, discrete = NULL)
 
       # change color scheme in all panels
       for (i in 1:plt$nrow) {
@@ -383,8 +375,9 @@ plot_pairs <- function(data, columns, column_labels = NULL,
               if (all(as.character(plt_df[, plt_fill]) ==
                       as.character(color_lower))) {
                 if (is.null(color_scheme_lower)) {
-                  plt[i, j] <- plt[i, j] +
-                    vthemes::scale_fill_vmodern(
+                  plt[i, j] <- plt[i, j] |>
+                    add_theme(
+                      aesthetic = "fill",
                       discrete = !is.numeric(color_lower), drop = drop
                     )
                 } else {
@@ -395,10 +388,11 @@ plot_pairs <- function(data, columns, column_labels = NULL,
                 }
               } else {
                 if (is.null(color_scheme_upper)) {
-                  plt[i, j] <- plt[i, j] +
-                    vthemes::scale_fill_vmodern(
-                      discrete = !is.numeric(color_upper),
-                      palette = "viridis", viridis_option = "D", drop = drop
+                  plt[i, j] <- plt[i, j] |>
+                    add_theme(
+                      aesthetic = "fill",
+                      discrete = !is.numeric(color_upper), drop = drop,
+                      palette = "2"
                     )
                 } else {
                   plt[i, j] <- plt[i, j] +
@@ -421,8 +415,9 @@ plot_pairs <- function(data, columns, column_labels = NULL,
               }
               if (ptr) {
                 if (is.null(color_scheme_lower)) {
-                  plt[i, j] <- plt[i, j] +
-                    vthemes::scale_color_vmodern(
+                  plt[i, j] <- plt[i, j] |>
+                    add_theme(
+                      aesthetic = "color",
                       discrete = !is.numeric(color_lower), drop = drop
                     )
                 } else {
@@ -433,10 +428,11 @@ plot_pairs <- function(data, columns, column_labels = NULL,
                 }
               } else {
                 if (is.null(color_scheme_upper)) {
-                  plt[i, j] <- plt[i, j] +
-                    vthemes::scale_color_vmodern(
-                      discrete = !is.numeric(color_upper),
-                      palette = "viridis", viridis_option = "D", drop = drop
+                  plt[i, j] <- plt[i, j] |>
+                    add_theme(
+                      aesthetic = "color",
+                      discrete = !is.numeric(color_upper), drop = drop,
+                      palette = "2"
                     )
                 } else {
                   plt[i, j] <- plt[i, j] +
@@ -453,12 +449,10 @@ plot_pairs <- function(data, columns, column_labels = NULL,
 
     if (length(columns) != 1) {
       plt <- cowplot::plot_grid(
-        GGally::ggmatrix_gtable(plt + vthemes::theme_vmodern(...)),
+        GGally::ggmatrix_gtable(plt),
         legend1, legend2,
         nrow = 3, rel_heights = c(10, 1, 1)
       )
-    } else {
-      plt <- plt + vthemes::theme_vmodern(...)
     }
   }
   return(plt)

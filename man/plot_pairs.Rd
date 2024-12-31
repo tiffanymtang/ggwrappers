@@ -64,8 +64,6 @@ upper panels). If \code{NULL} (default), viridis color scheme is used.}
 \item{show_upper}{Logical. Should we show subplots in upper panels?}
 
 \item{drop}{Logical. Whether or not to drop factors with no observations.}
-
-\item{...}{Additional arguments to pass to \code{\link[vthemes:theme_vmodern]{vthemes::theme_vmodern()}}.}
 }
 \value{
 A \link[GGally:ggpairs]{GGally::ggpairs} object.
