@@ -4,6 +4,21 @@
 <url><loc>/LICENSE.html</loc></url>
 <url><loc>/authors.html</loc></url>
 <url><loc>/index.html</loc></url>
+<url><loc>/reference/add_axis_text_colors.html</loc></url>
+<url><loc>/reference/add_theme.html</loc></url>
+<url><loc>/reference/get_aesthetics.html</loc></url>
+<url><loc>/reference/get_custom_color_palette.html</loc></url>
 <url><loc>/reference/index.html</loc></url>
+<url><loc>/reference/plot_bar.html</loc></url>
+<url><loc>/reference/plot_boxplot.html</loc></url>
+<url><loc>/reference/plot_density.html</loc></url>
+<url><loc>/reference/plot_hclust.html</loc></url>
+<url><loc>/reference/plot_heatmap.html</loc></url>
+<url><loc>/reference/plot_histogram.html</loc></url>
+<url><loc>/reference/plot_horizontal_dotplot.html</loc></url>
+<url><loc>/reference/plot_line.html</loc></url>
+<url><loc>/reference/plot_pairs.html</loc></url>
+<url><loc>/reference/plot_point.html</loc></url>
+<url><loc>/reference/shared_plot_args.html</loc></url>
 </urlset>
 
