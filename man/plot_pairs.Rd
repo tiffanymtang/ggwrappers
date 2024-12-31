@@ -20,8 +20,7 @@ plot_pairs(
   cor_text_size = 3.5,
   subsample = 1,
   show_upper = TRUE,
-  drop = TRUE,
-  ...
+  drop = TRUE
 )
 }
 \arguments{
