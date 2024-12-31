@@ -47,7 +47,7 @@ plot_pairs <- function(data, columns, column_labels = NULL,
                        color_scheme_lower = NULL, color_scheme_upper = NULL,
                        title = "",
                        point_size = .5, point_alpha = .5, cor_text_size = 3.5,
-                       subsample = 1, show_upper = TRUE, drop = TRUE, ...) {
+                       subsample = 1, show_upper = TRUE, drop = TRUE) {
 
   # convert character color vectors to factor for ggplot color/fill aesthetic
   if (!is.null(color_lower)) {

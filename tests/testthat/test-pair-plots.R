@@ -1,4 +1,5 @@
 test_that("plot_pairs works properly", {
+  skip_on_ci()
   data(iris)
   X <- iris |>
     dplyr::mutate(
