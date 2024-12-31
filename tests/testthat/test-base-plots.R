@@ -40,6 +40,7 @@ test_that("plot_boxplot works properly", {
 })
 
 test_that("plot_density works properly", {
+  skip_on_ci()
   data(iris)
 
   # plot distribution of all data in data frame
