@@ -182,7 +182,7 @@ plot_heatmap <- function(X, y_groups = NULL, x_groups = NULL,
     plt <- ggplot2::ggplot(X_long) +
       ggplot2::geom_tile(
         ggplot2::aes(x = x, y = y, fill = fill, color = fill),
-        size = size
+        linewidth = size
       ) +
       ggplot2::guides(color = "none")
   } else {
