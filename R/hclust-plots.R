@@ -74,7 +74,7 @@ plot_hclust <- function(data,
   if (is.null(leaf_labels)) {
     hclust_dend <- hclust_dend |>
       dendextend::set_labels(
-        rep("------", ncol(as.matrix(Dmat)))
+        rep("------", nrow(data))
       )
   } else {
     hclust_dend <- hclust_dend |>
