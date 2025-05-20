@@ -72,15 +72,23 @@ plot_hclust <- function(data,
 
   # get leaf labels
   if (is.null(leaf_labels)) {
-    hclust_dend <- hclust_dend |>
-      dendextend::set_labels(
-        rep("------", nrow(data))
-      )
+    # wrap in tryCatch in case of memory error
+    hclust_dend <- tryCatch({
+      hclust_dend |>
+        dendextend::set_labels(rep("------", nrow(data)))
+    }, error = function(e) {
+      return(hclust_dend)  # Return original object unchanged
+    })
   } else {
-    hclust_dend <- hclust_dend |>
-      dendextend::set_labels(
-        leaf_labels[stats::order.dendrogram(hclust_dend)]
-      )
+    # wrap in tryCatch in case of memory error
+    hclust_dend <- tryCatch({
+      hclust_dend <- hclust_dend |>
+        dendextend::set_labels(
+          leaf_labels[stats::order.dendrogram(hclust_dend)]
+        )
+    }, error = function(e) {
+      return(hclust_dend)  # Return original object unchanged
+    })
   }
 
   if (is.null(title)) {
